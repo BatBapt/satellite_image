@@ -15,18 +15,13 @@ def get_transform(train):
         transform_list = v2.Compose([
             v2.RandomHorizontalFlip(),
             v2.RandomVerticalFlip(),
-            v2.RandomCrop((224, 224)),
-            v2.ToImage(),  # Remplace ToTensor()
-            v2.ToDtype(torch.float32, scale=True), # Convertit en float [0, 1]
-            # La normalisation ne s'appliquera automatiquement qu'à l'image
-            v2.Normalize([0.485, 0.456, 0.406, 0], [0.229, 0.224, 0.225, 1])
+            v2.ToDtype(torch.float32, scale=True),
+            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
     else:
         transform_list = v2.Compose([
-            v2.CenterCrop((224, 224)),
-            v2.ToImage(),
             v2.ToDtype(torch.float32, scale=True),
-            v2.Normalize([0.485, 0.456, 0.406, 0], [0.229, 0.224, 0.225, 1])
+            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
 
     return transform_list
