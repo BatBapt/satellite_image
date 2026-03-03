@@ -1,0 +1,8 @@
+settings:
+  patch_size: 256
+
+hyperparameters:
+  batch_size: 16
+  epochs: 35
+  lr_backbone: 0.00001
+  lr_classifier: 0.001
