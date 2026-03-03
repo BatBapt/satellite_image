@@ -1,4 +1,5 @@
 import os
+import csv
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -78,14 +79,21 @@ def validate(model, dataloader, criterion, device):
 
 def main():
     if cfg.DEVICE.type == 'cuda':
-        print(f"Training GPU on : {torch.cuda.get_device_name(0)}")
+        print(f"Training on GPU: {torch.cuda.get_device_name(0)}")
     else:
-        print("/!\ Training on CPU")
+        print("Training on CPU")
 
 
     model_output_dir = os.path.join(cfg.MODEL_WEIGHTS_PATH, f"satellite_deeplab_{cfg.PATCH_SIZE}")
     os.makedirs(model_output_dir, exist_ok=True)
 
+    # --- Setup Logging ---
+    log_file_path = os.path.join(model_output_dir, "training_log.csv")
+    with open(log_file_path, mode='w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['Epoch', 'Train Loss', 'Train IoU', 'Val Loss', 'Val IoU'])
+    print(f"Logging metrics to: {log_file_path}")
+    # ---------------------
 
     train_patches_dir = os.path.join(cfg.MAIN_DATA_PATH, f"train_patches_{cfg.PATCH_SIZE}")
     val_patches_dir = os.path.join(cfg.MAIN_DATA_PATH, f"val_patches_{cfg.PATCH_SIZE}")
@@ -118,6 +126,12 @@ def main():
 
         print(f"Train Loss: {train_loss:.4f}\tTrain IoU: {train_iou:.4f}")
         print(f"Val Loss: {val_loss:.4f}\tVal IoU: {val_iou:.4f}")
+
+        # --- Log Metrics ---
+        with open(log_file_path, mode='a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([epoch + 1, train_loss, train_iou, val_loss, val_iou])
+        # -------------------
 
         if val_iou > best_iou:
             best_iou = val_iou
