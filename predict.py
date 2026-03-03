@@ -68,8 +68,8 @@ if __name__ == "__main__":
 
     model = SatelliteDeepLab(num_classes=1)
 
-    best_weight = os.path.join(cfg.MODEL_WEIGHTS_PATH, "satellite_deeplab", "best_model_32.pth")
-    suffix_model = best_weight.split("/")[-1].split(".")[0].split("_")[-1]  # 'best_model_XXX.pth' -> 'XXX'
+    best_weight = os.path.join(cfg.MODEL_WEIGHTS_PATH, "satellite_deeplab", "best_model_1.pth")
+    suffix_model = best_weight.split(os.sep)[-1].split(".")[0].split("_")[-1]  # 'best_model_XXX.pth' -> 'XXX'
 
     model.load_state_dict(torch.load(best_weight, map_location=cfg.DEVICE))
     model.to(cfg.DEVICE)
@@ -78,7 +78,8 @@ if __name__ == "__main__":
     output_seg_paths = os.path.join(cfg.MAIN_DATA_PATH, "test", "predictions")
     os.makedirs(output_seg_paths, exist_ok=True)
 
-    for filename in os.listdir(test_image_path):
-        image_path = os.path.join(test_image_path, filename)
-        output_path = os.path.join(output_seg_paths, f"seg_{suffix_model}_{filename}.tif")
+    for file in os.listdir(test_image_path):
+        filename, ext = file.split(".")
+        image_path = os.path.join(test_image_path, file)
+        output_path = os.path.join(output_seg_paths, f"seg_{suffix_model}_{filename}.{ext}")
         pred(image_path, model, cfg.DEVICE, output_path, patch_size=256, batch_size=cfg.BATCH_SIZE)

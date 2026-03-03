@@ -1,8 +1,10 @@
-import os.path
-
+import os
+from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
+
 import configuration as paths
+import configuration as cfg
 
 def plot_sample(dataset="train"):
     train_path = os.path.join(paths.MAIN_DATA_PATH, dataset)
@@ -24,7 +26,32 @@ def plot_sample(dataset="train"):
     plt.show()
 
 
+def compare_predictions(filename, prediction_folder, suffix_models):
+    n = len(suffix_models)
+    fig, axes = plt.subplots(1, n, figsize=(5 * n, 5))
+
+    if n == 1:
+        axes = [axes]
+
+    for i, suffixe in enumerate(suffix_models):
+        seg_name = f"seg_{suffixe}_{filename}.tif.tif"
+        seg_path = os.path.join(prediction_folder, seg_name)
+
+        ax = axes[i]
+
+        masque = Image.open(seg_path)
+
+        ax.imshow(masque, cmap='gray')
+        ax.set_title(f"Modèle {suffixe}", fontsize=14, fontweight='bold')
+        ax.axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+
 if __name__ == "__main__":
 
-    plot_sample("train_patches")
+    # plot_sample("train_patches")
 
+    pred_folder = os.path.join(cfg.MAIN_DATA_PATH, "test", "predictions")
+    compare_predictions("bellingham35", pred_folder, ["1", "15", "32"])
