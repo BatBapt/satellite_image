@@ -15,7 +15,8 @@ class SatelliteDeepLab(nn.Module):
 
         self.model.aux_classifier = None
 
-        self.model.classifier = torchvision.models.segmentation.deeplabv3.DeepLabHead(2048, num_classes)
+        num_features = self.model.backbone.layer4[-1].bn3.num_features
+        self.model.classifier = torchvision.models.segmentation.deeplabv3.DeepLabHead(num_features, num_classes)
 
     def forward(self, x):
         return self.model(x)["out"]

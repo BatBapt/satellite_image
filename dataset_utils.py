@@ -20,6 +20,7 @@ def get_transform(train):
         ])
     else:
         transform_list = v2.Compose([
+            v2.ToImage(),
             v2.ToDtype(torch.float32, scale=True),
             v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
@@ -134,7 +135,7 @@ class CustomDataset(Dataset):
 
         # 1. On indique explicitement à PyTorch la nature de chaque donnée
         image = tv_tensors.Image(image)
-        label = tv_tensors.Mask(label) # Crucial: v2 saura qu'il ne faut pas normaliser ceci !
+        label = tv_tensors.Mask(label)
 
         # 2. On passe les DEUX variables en même temps
         if self.transforms:
