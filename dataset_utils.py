@@ -7,7 +7,7 @@ from torchvision.transforms import v2
 from torchvision import tv_tensors
 import shutil
 
-import configuration as paths
+import configuration as cfg
 
 
 def get_transform(train):
@@ -145,16 +145,18 @@ class CustomDataset(Dataset):
 
 
 if __name__ == "__main__":
-    format_dataset(paths.MAIN_DATA_PATH, split_ratio=0.2)
+    format_dataset(cfg.MAIN_DATA_PATH, split_ratio=0.2)
 
-    train_path = os.path.join(paths.MAIN_DATA_PATH, "train")
-    val_path = os.path.join(paths.MAIN_DATA_PATH, "val")
+    patch_size = cfg.PATCH_SIZE
 
-    train_patches_dir = os.path.join(paths.MAIN_DATA_PATH, "train_patches")
-    val_patches_dir = os.path.join(paths.MAIN_DATA_PATH, "val_patches")
+    train_path = os.path.join(cfg.MAIN_DATA_PATH, "train")
+    val_path = os.path.join(cfg.MAIN_DATA_PATH, "val")
 
-    create_patches(train_path, train_patches_dir, patch_size=256)
-    create_patches(val_path, val_patches_dir, patch_size=256)
+    train_patches_dir = os.path.join(cfg.MAIN_DATA_PATH, f"train_patches_{patch_size}")
+    val_patches_dir = os.path.join(cfg.MAIN_DATA_PATH, f"val_patches_{patch_size}")
+
+    create_patches(train_path, train_patches_dir, patch_size=patch_size)
+    create_patches(val_path, val_patches_dir, patch_size=patch_size)
 
     dataset = CustomDataset(input_path=train_patches_dir)
     print(f"Dataset size: {len(dataset)}")

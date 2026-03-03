@@ -34,7 +34,7 @@ def compare_predictions(filename, prediction_folder, suffix_models):
         axes = [axes]
 
     for i, suffixe in enumerate(suffix_models):
-        seg_name = f"seg_{suffixe}_{filename}.tif.tif"
+        seg_name = f"seg_{suffixe}_{filename}.tif"
         seg_path = os.path.join(prediction_folder, seg_name)
 
         ax = axes[i]
@@ -54,4 +54,4 @@ if __name__ == "__main__":
     # plot_sample("train_patches")
 
     pred_folder = os.path.join(cfg.MAIN_DATA_PATH, "test", "predictions")
-    compare_predictions("bellingham35", pred_folder, ["1", "15", "32"])
+    compare_predictions("bellingham35", pred_folder, ["1", "32"])

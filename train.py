@@ -83,12 +83,12 @@ def main():
         print("/!\ Training on CPU")
 
 
-    model_output_dir = os.path.join(cfg.MODEL_WEIGHTS_PATH, "satellite_deeplab")
+    model_output_dir = os.path.join(cfg.MODEL_WEIGHTS_PATH, f"satellite_deeplab_{cfg.PATCH_SIZE}")
     os.makedirs(model_output_dir, exist_ok=True)
 
 
-    train_patches_dir = os.path.join(cfg.MAIN_DATA_PATH, "train_patches")
-    val_patches_dir = os.path.join(cfg.MAIN_DATA_PATH, "val_patches")
+    train_patches_dir = os.path.join(cfg.MAIN_DATA_PATH, f"train_patches_{cfg.PATCH_SIZE}")
+    val_patches_dir = os.path.join(cfg.MAIN_DATA_PATH, f"val_patches_{cfg.PATCH_SIZE}")
 
     train_dataset = CustomDataset(input_path=train_patches_dir, transforms=get_transform(train=True))
     val_dataset = CustomDataset(input_path=val_patches_dir, transforms=get_transform(train=False))

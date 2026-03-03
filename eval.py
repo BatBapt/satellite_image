@@ -51,7 +51,7 @@ if __name__ == "__main__":
     val_dataset = CustomDataset(input_path=val_patches_dir, transforms=get_transform(train=False))
     val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False, num_workers=4)
 
-    best_weight = os.path.join(cfg.MODEL_WEIGHTS_PATH, "satellite_deeplab", "best_model_32.pth")
+    best_weight = os.path.join(cfg.MODEL_WEIGHTS_PATH, "satellite_deeplab_256", "best_model_15.pth")
     model = SatelliteDeepLab(num_classes=1)
     model.load_state_dict(torch.load(best_weight, map_location=cfg.DEVICE))
     model.to(cfg.DEVICE)
@@ -67,3 +67,36 @@ if __name__ == "__main__":
     print(f"F1 Score  : {f1 * 100:.2f} %")
     print(f"IoU       : {iou * 100:.2f} %")
     print("=" * 40)
+
+
+    """
+    Model 1
+    ========================================
+    FINAL EVALUATION REPORT 
+    ========================================
+    Precision : 85.62 %
+    Recall    : 81.11 %
+    F1 Score  : 83.30 %
+    IoU       : 71.38 %
+    ========================================
+    
+    Model 15
+    ========================================
+    FINAL EVALUATION REPORT
+    ========================================
+    Precision : 88.70 %
+    Recall    : 87.68 %
+    F1 Score  : 88.19 %
+    IoU       : 78.87 %
+    ========================================
+    
+    Model 32
+    ========================================
+    FINAL EVALUATION REPORT
+    ========================================
+    Precision : 88.77 %
+    Recall    : 88.62 %
+    F1 Score  : 88.70 %
+    IoU       : 79.69 %
+    ========================================
+    """
