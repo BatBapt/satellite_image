@@ -51,7 +51,7 @@ def compare_predictions(filename, prediction_folder, suffix_models):
 
 if __name__ == "__main__":
 
-    # plot_sample("train_patches")
+    plot_sample(f"train_patches_{cfg.PATCH_SIZE}")
 
-    pred_folder = os.path.join(cfg.MAIN_DATA_PATH, "test", "predictions")
-    compare_predictions("bellingham35", pred_folder, ["1", "15", "32"])
+    # pred_folder = os.path.join(cfg.MAIN_DATA_PATH, "test", "predictions")
+    # compare_predictions("bellingham35", pred_folder, ["1", "15", "32"])

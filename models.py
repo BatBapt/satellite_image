@@ -1,6 +1,5 @@
 import torchvision
 import torch.nn as nn
-from torchsummary import summary
 
 import configuration as cfg
 

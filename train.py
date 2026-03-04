@@ -3,6 +3,7 @@ import csv
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from datetime import datetime
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
@@ -51,7 +52,6 @@ def train_one_epoch(model, dataloader, criterion, optimizer, epoch, device):
         epoch_iou += calculate_iou(outputs, labels).item()
 
         loop.set_postfix(loss=loss.item())
-        break
 
     return epoch_loss / len(dataloader), epoch_iou / len(dataloader)
 
@@ -92,7 +92,7 @@ def main():
     log_file_path = os.path.join(model_output_dir, "training_log.csv")
     with open(log_file_path, mode='w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(['Epoch', 'Train Loss', 'Train IoU', 'Val Loss', 'Val IoU'])
+        writer.writerow(['Epoch', 'Timestamp', 'Train Loss', 'Train IoU', 'Val Loss', 'Val IoU'])
     print(f"Logging metrics to: {log_file_path}")
     # ---------------------
 
@@ -128,10 +128,12 @@ def main():
         print(f"Train Loss: {train_loss:.4f}\tTrain IoU: {train_iou:.4f}")
         print(f"Val Loss: {val_loss:.4f}\tVal IoU: {val_iou:.4f}")
 
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         # --- Log Metrics ---
         with open(log_file_path, mode='a', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow([epoch + 1, train_loss, train_iou, val_loss, val_iou])
+            writer.writerow([epoch + 1, current_time, train_loss, train_iou, val_loss, val_iou])
         # -------------------
 
         if val_iou > best_iou:
