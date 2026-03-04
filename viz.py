@@ -54,4 +54,4 @@ if __name__ == "__main__":
     # plot_sample("train_patches")
 
     pred_folder = os.path.join(cfg.MAIN_DATA_PATH, "test", "predictions")
-    compare_predictions("bellingham35", pred_folder, ["1", "32"])
+    compare_predictions("bellingham35", pred_folder, ["1", "15", "32"])

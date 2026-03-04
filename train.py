@@ -51,6 +51,7 @@ def train_one_epoch(model, dataloader, criterion, optimizer, epoch, device):
         epoch_iou += calculate_iou(outputs, labels).item()
 
         loop.set_postfix(loss=loss.item())
+        break
 
     return epoch_loss / len(dataloader), epoch_iou / len(dataloader)
 
@@ -101,8 +102,8 @@ def main():
     train_dataset = CustomDataset(input_path=train_patches_dir, transforms=get_transform(train=True))
     val_dataset = CustomDataset(input_path=val_patches_dir, transforms=get_transform(train=False))
 
-    train_loader = DataLoader(train_dataset, batch_size=cfg.BATCH_SIZE, shuffle=True, num_workers=4)
-    val_loader = DataLoader(val_dataset, batch_size=cfg.BATCH_SIZE, shuffle=False, num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=cfg.BATCH_SIZE, shuffle=True, num_workers=0)
+    val_loader = DataLoader(val_dataset, batch_size=cfg.BATCH_SIZE, shuffle=False, num_workers=0)
 
     print("Datasets and DataLoaders created !")
     print(f"Train dataset size: {len(train_dataset)}")

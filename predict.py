@@ -97,13 +97,13 @@ def pred(image_path, model, device, output_path, patch_size=256, batch_size=16, 
 
 if __name__ == "__main__":
     # Setup paths
-    test_image_path = os.path.join(cfg.MAIN_DATA_PATH, "test", "images")
-    output_seg_paths = os.path.join(cfg.MAIN_DATA_PATH, "test", "predictions")
+    test_image_path = os.path.join(cfg.MAIN_DATA_PATH, "val", "images")
+    output_seg_paths = os.path.join(cfg.MAIN_DATA_PATH, "val", "predictions")
     os.makedirs(output_seg_paths, exist_ok=True)
 
     # Load Model
     model = SatelliteDeepLab(num_classes=1)
-    best_weight = os.path.join(cfg.MODEL_WEIGHTS_PATH, f"satellite_deeplab_{cfg.PATCH_SIZE}", "best_model_15.pth")
+    best_weight = os.path.join(cfg.MODEL_WEIGHTS_PATH, f"satellite_deeplab_{cfg.PATCH_SIZE}", "best_model_32.pth")
 
     suffix_model = os.path.splitext(os.path.basename(best_weight))[0].split("_")[-1]
 
@@ -137,7 +137,7 @@ if __name__ == "__main__":
             model,
             cfg.DEVICE,
             output_path,
-            patch_size=256,
+            patch_size=cfg.PATCH_SIZE,
             batch_size=cfg.BATCH_SIZE,
             verbose=False
         )

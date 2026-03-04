@@ -49,7 +49,7 @@ def evaluer_dataset(model, dataloader, device, threshold=0.5):
 if __name__ == "__main__":
     val_patches_dir = os.path.join(cfg.MAIN_DATA_PATH, f"val_patches_{cfg.PATCH_SIZE}")
     val_dataset = CustomDataset(input_path=val_patches_dir, transforms=get_transform(train=False))
-    val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False, num_workers=4)
+    val_loader = DataLoader(val_dataset, batch_size=cfg.BATCH_SIZE, shuffle=False, num_workers=4)
 
     best_weight = os.path.join(cfg.MODEL_WEIGHTS_PATH, f"satellite_deeplab_{cfg.PATCH_SIZE}", "best_model_15.pth")
     model = SatelliteDeepLab(num_classes=1)
@@ -58,7 +58,6 @@ if __name__ == "__main__":
 
     precision, recall, f1, iou = evaluer_dataset(model, val_loader, cfg.DEVICE)
 
-    # 5. Affichage du rapport final
     print("\n" + "=" * 40)
     print("FINAL EVALUATION REPORT")
     print("=" * 40)
@@ -67,37 +66,3 @@ if __name__ == "__main__":
     print(f"F1 Score  : {f1 * 100:.2f} %")
     print(f"IoU       : {iou * 100:.2f} %")
     print("=" * 40)
-
-
-    """
-    PATCH SIZE = 256: 
-        Model 1
-        ========================================
-        FINAL EVALUATION REPORT 
-        ========================================
-        Precision : 85.62 %
-        Recall    : 81.11 %
-        F1 Score  : 83.30 %
-        IoU       : 71.38 %
-        ========================================
-        
-        Model 15
-        ========================================
-        FINAL EVALUATION REPORT
-        ========================================
-        Precision : 88.70 %
-        Recall    : 87.68 %
-        F1 Score  : 88.19 %
-        IoU       : 78.87 %
-        ========================================
-        
-        Model 32
-        ========================================
-        FINAL EVALUATION REPORT
-        ========================================
-        Precision : 88.77 %
-        Recall    : 88.62 %
-        F1 Score  : 88.70 %
-        IoU       : 79.69 %
-        ========================================
-    """
