@@ -39,7 +39,12 @@ def compare_predictions(filename, prediction_folder, suffix_models):
 
         ax = axes[i]
 
-        masque = Image.open(seg_path)
+        try:
+            masque = Image.open(seg_path)
+        except FileNotFoundError:
+            print(f"File not found: {seg_path}")
+            print("Make sure to run the prediction script to generate the segmentation masks before visualizing.")
+            return
 
         ax.imshow(masque, cmap='gray')
         ax.set_title(f"Modèle {suffixe}", fontsize=14, fontweight='bold')
@@ -51,7 +56,7 @@ def compare_predictions(filename, prediction_folder, suffix_models):
 
 if __name__ == "__main__":
 
-    plot_sample(f"train_patches_{cfg.PATCH_SIZE}")
+    # plot_sample(f"train_patches_{cfg.PATCH_SIZE}")
 
-    # pred_folder = os.path.join(cfg.MAIN_DATA_PATH, "test", "predictions")
-    # compare_predictions("bellingham35", pred_folder, ["1", "15", "32"])
+    pred_folder = os.path.join(cfg.MAIN_DATA_PATH, "test", "predictions")
+    compare_predictions("bellingham10", pred_folder, ["1", "14", "33"])

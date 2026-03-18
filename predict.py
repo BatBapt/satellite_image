@@ -2,7 +2,7 @@ import os
 import math
 import torch
 from PIL import Image
-from tqdm import tqdm  # Recommended for progress bars
+from torchvision import tv_tensors
 
 from models import SatelliteDeepLab
 from dataset_utils import get_transform
@@ -24,6 +24,7 @@ def get_patch_generator(image, patch_size, transform):
     for y in range(0, new_h, patch_size):
         for x in range(0, new_w, patch_size):
             patch = padded_img.crop((x, y, x + patch_size, y + patch_size))
+            patch = tv_tensors.Image(patch)
             tensor_patch = transform(patch)
             yield tensor_patch, (x, y)
 
@@ -55,7 +56,6 @@ def pred(image_path, model, device, output_path, patch_size=256, batch_size=16, 
     batch_coords = []
 
     with torch.no_grad():
-        # Iterate through the generator
         for tensor_patch, (x, y) in patch_gen:
             batch_images.append(tensor_patch)
             batch_coords.append((x, y))
@@ -96,14 +96,17 @@ def pred(image_path, model, device, output_path, patch_size=256, batch_size=16, 
 
 
 if __name__ == "__main__":
-    # Setup paths
-    test_image_path = os.path.join(cfg.MAIN_DATA_PATH, "val", "images")
-    output_seg_paths = os.path.join(cfg.MAIN_DATA_PATH, "val", "predictions")
+    test_image_path = os.path.join(cfg.MAIN_DATA_PATH, "test", "images")
+    if not os.path.exists(test_image_path):
+        raise FileNotFoundError(f"Test images directory not found at: {test_image_path}")
+
+    output_seg_paths = os.path.join(cfg.MAIN_DATA_PATH, "test", "predictions")
     os.makedirs(output_seg_paths, exist_ok=True)
 
-    # Load Model
     model = SatelliteDeepLab(num_classes=1)
-    best_weight = os.path.join(cfg.MODEL_WEIGHTS_PATH, f"satellite_deeplab_{cfg.PATCH_SIZE}", "best_model_32.pth")
+    best_weight = os.path.join(cfg.MODEL_WEIGHTS_PATH, f"satellite_deeplab_{cfg.PATCH_SIZE}", "best_model_12.pth")
+    if not os.path.exists(best_weight):
+        raise FileNotFoundError(f"Best model weights not found at: {best_weight}")
 
     suffix_model = os.path.splitext(os.path.basename(best_weight))[0].split("_")[-1]
 
@@ -121,7 +124,6 @@ if __name__ == "__main__":
     for i, file in enumerate(all_files):
         print(f"Processing file {i + 1}/{total_files}: {file}")
 
-        # Robust extension handling
         filename, ext = os.path.splitext(file)
 
         image_path = os.path.join(test_image_path, file)

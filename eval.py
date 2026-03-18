@@ -8,7 +8,7 @@ from models import SatelliteDeepLab
 import configuration as cfg
 
 
-def evaluer_dataset(model, dataloader, device, threshold=0.5):
+def eval_dataset(model, dataloader, device, threshold=0.5):
     model.eval()
 
     total_tp = 0.0
@@ -51,12 +51,12 @@ if __name__ == "__main__":
     val_dataset = CustomDataset(input_path=val_patches_dir, transforms=get_transform(train=False))
     val_loader = DataLoader(val_dataset, batch_size=cfg.BATCH_SIZE, shuffle=False, num_workers=4)
 
-    best_weight = os.path.join(cfg.MODEL_WEIGHTS_PATH, f"satellite_deeplab_{cfg.PATCH_SIZE}", "best_model_15.pth")
+    best_weight = os.path.join(cfg.MODEL_WEIGHTS_PATH, f"satellite_deeplab_{cfg.PATCH_SIZE}", "best_model_33.pth")
     model = SatelliteDeepLab(num_classes=1)
     model.load_state_dict(torch.load(best_weight, map_location=cfg.DEVICE))
     model.to(cfg.DEVICE)
 
-    precision, recall, f1, iou = evaluer_dataset(model, val_loader, cfg.DEVICE)
+    precision, recall, f1, iou = eval_dataset(model, val_loader, cfg.DEVICE)
 
     print("\n" + "=" * 40)
     print("FINAL EVALUATION REPORT")
@@ -66,3 +66,36 @@ if __name__ == "__main__":
     print(f"F1 Score  : {f1 * 100:.2f} %")
     print(f"IoU       : {iou * 100:.2f} %")
     print("=" * 40)
+
+    """
+    14:
+        ========================================
+        FINAL EVALUATION REPORT
+        ========================================
+        Precision : 88.05 %
+        Recall    : 88.50 %
+        F1 Score  : 88.27 %
+        IoU       : 79.01 %
+        ========================================
+                
+    33 (best):
+        ========================================
+        FINAL EVALUATION REPORT
+        ========================================
+        Precision : 89.26 %
+        Recall    : 88.31 %
+        F1 Score  : 88.78 %
+        IoU       : 79.83 %
+        ========================================
+    
+    
+    final (35):
+        ========================================
+        FINAL EVALUATION REPORT
+        ========================================
+        Precision : 89.56 %
+        Recall    : 87.75 %
+        F1 Score  : 88.65 %
+        IoU       : 79.61 %
+        ========================================
+    """
