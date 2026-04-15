@@ -1,10 +1,17 @@
 # Satellite Imagery Segmentation Project 🌍
 
-Welcome! This project focuses on semantic segmentation of satellite imagery to identify buildings. We utilize the **INRIA Aerial Image Labeling Dataset** to train a **DeepLabV3+** model with a **ResNet50** backbone.
+Welcome! This project focuses on semantic segmentation of satellite imagery to identify buildings. 
+We utilize the **INRIA Aerial Image Labeling Dataset** to train a **DeepLabV3+** model with a **ResNet50** backbone.
 
 ## The Mission
 
-Our goal is to take raw aerial imagery and generate precise segmentation masks that highlight every single building. Whether it's a small house or a large commercial structure, the model aims to detect it accurately.
+Our goal is to take raw aerial imagery and generate precise segmentation masks that highlight every single building. 
+Whether it's a small house or a large commercial structure, the model aims to detect it accurately.
+
+
+## The Data
+We use the **INRIA Aerial Image Labeling Dataset**, which provides high-resolution aerial images with pixel-wise building labels.
+*   **Dataset Link**: [Inria Aerial Image Labeling Dataset](https://project.inria.fr/aerialimagelabeling/download/)
 
 ## The Model
 
@@ -12,11 +19,15 @@ We are using a state-of-the-art segmentation architecture:
 *   **Architecture**: [DeepLabV3+](https://arxiv.org/abs/1802.02611) - Known for its ability to capture multi-scale context.
 *   **Backbone**: [ResNet50](https://arxiv.org/abs/1512.03385) - A robust feature extractor.
 
+---
+
 ## Hardware & Performance ⚙️
 
 The model is trained on the following hardware:
 *   **GPU**: Nvidia RTX 4060 (8GB VRAM)
 *   **Training Time**: Approximately **25 minutes per epoch**.
+
+---
 
 ## How to Run
 
@@ -52,7 +63,7 @@ The model is trained on the following hardware:
     ```bash
     python predict.py
     ```
-
+---
 
 ## Project Structure
 
@@ -80,22 +91,44 @@ Contains utility functions to visualize the dataset samples and the model's pred
 *   **`configuration.py`**: The Python module that exposes settings to the rest of the code.
 *   **`models/config.yaml`**: A YAML file for easy tuning of hyperparameters (e.g., `batch_size`, `learning_rate`) and global settings without modifying the codebase.
 
-## The Data
-
-We use the **INRIA Aerial Image Labeling Dataset**, which provides high-resolution aerial images with pixel-wise building labels.
-*   **Dataset Link**: [Hugging Face - INRIA Aerial Image Labeling](https://huggingface.co/datasets/blanchon/INRIA-Aerial-Image-Labeling)
+---
 
 ## Results 📊
 
 Here we will showcase the model's performance.
 
 ### Training Log
-*(Paste your training log or CSV content here)*
+![training and val loss](training_metrics.png "Training and Validation Loss")
+
+We can see that the training loss decreases quickly. 
+As the curve look like, the model is learning to fit the training data, but it also shows signs of overfitting as the validation loss starts to increase after a certain point. 
+The Train IoU and Val IoU curves also reflect this trend, with the training IoU improving steadily while the validation IoU plateaus and then slightly decreases.
+
+I assume that with more epochs, the model would continue to overfit, so it would be interesting to implement early stopping or regularization techniques in future work.
+Or even to experiment with different architectures or data augmentation to improve generalization.
 
 ### Visual Results
-*(Add your result images here later)*
 
-## Future Work 🚀
+In the first place, you can see the comparison between the ground truth mask and the predicted mask for the validation dataset.
+Those data were not seen during the training phase, so it is a good way to evaluate the model's generalization capabilities.
+
+![mask val comparaison](val_predictions_comparison.png "Comparison between Ground Truth and Predicted Mask")
+
+The model successfully identifies most of the buildings, although there are some false positives and missed detections.
+We can also observe that the model captures the general shape of the buildings, but sometimes struggles with smaller structures or those close to each other.
+You can see the small "building noise" in the predicted mask as tiny white dotes.
+
+The dataset also include a test set, without the ground truth masks. We can run the model on those images to see how it performs on completely unseen data.
+
+![test sample Belligham](sample_prediction_bellingham19.png "Test Sample Bellingham19")
+![another test sample from Tyrol](sample_prediction_tyrol-e7.png "Test Sample Bellingham20")
+![another test sample from Sfo](sample_prediction_sfo15.png "Test Sample Vienna23")
+
+As we can see, the model is able to generalize to new images and still detects buildings, although the performance may vary depending on the specific characteristics of the test images (e.g., lighting conditions, building density, etc.).
+However, it is important to note that without the ground truth masks for the test set, we cannot quantitatively evaluate the model's performance on this data.
+
+---
+## Future Work and Ideas 🚀
 
 Here are some ideas for future improvements and experiments:
 
@@ -106,4 +139,4 @@ Here are some ideas for future improvements and experiments:
 - [ ] **Scheduler**: Implement a learning rate scheduler (e.g., CosineAnnealing) for better convergence.
 
 
-Happy coding! 🛰️
+Happy coding! 
