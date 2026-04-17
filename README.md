@@ -19,6 +19,13 @@ We are using a state-of-the-art segmentation architecture:
 *   **Architecture**: [DeepLabV3+](https://arxiv.org/abs/1802.02611) - Known for its ability to capture multi-scale context.
 *   **Backbone**: [ResNet50](https://arxiv.org/abs/1512.03385) - A robust feature extractor.
 
+Since the DeepLab architecture is initialized with pretrained weights from the COCO dataset, 
+the model already possesses robust general-purpose feature extraction capabilities. 
+The main challenge is not learning fundamental shapes or edges, but adapting the network to the specific top-down
+perspective and textures of satellite imagery. Therefore, a differential learning rate strategy is applied:
+we carefully fine-tune the pretrained backbone with a low learning rate to avoid catastrophic forgetting,
+while assigning a higher learning rate to the newly initialized classifier so it can quickly learn the target classes.
+
 ---
 
 ## Hardware & Performance ⚙️
@@ -98,7 +105,7 @@ Contains utility functions to visualize the dataset samples and the model's pred
 Here we will showcase the model's performance.
 
 ### Training Log
-![training and val loss](training_metrics.png "Training and Validation Loss")
+![training and val loss](plot/training_metrics.png "Training and Validation Loss")
 
 We can see that the training loss decreases quickly. 
 As the curve look like, the model is learning to fit the training data, but it also shows signs of overfitting as the validation loss starts to increase after a certain point. 
@@ -112,17 +119,27 @@ Or even to experiment with different architectures or data augmentation to impro
 In the first place, you can see the comparison between the ground truth mask and the predicted mask for the validation dataset.
 Those data were not seen during the training phase, so it is a good way to evaluate the model's generalization capabilities.
 
-![mask val comparaison](val_predictions_comparison.png "Comparison between Ground Truth and Predicted Mask")
+![mask val comparaison](plot/val_predictions_comparison.png "Comparison between Ground Truth and Predicted Mask")
 
 The model successfully identifies most of the buildings, although there are some false positives and missed detections.
 We can also observe that the model captures the general shape of the buildings, but sometimes struggles with smaller structures or those close to each other.
 You can see the small "building noise" in the predicted mask as tiny white dotes.
 
+This visualization is also confirmed with those scores:
+
+
+| Metric    | Score   |
+|:----------|:--------|
+| Precision | 89.26 % |
+| Recall    | 88.31 % |
+| F1 Score  | 88.78 % |
+| IoU       | 79.83 % |
+
 The dataset also include a test set, without the ground truth masks. We can run the model on those images to see how it performs on completely unseen data.
 
-![test sample Belligham](sample_prediction_bellingham19.png "Test Sample Bellingham19")
-![another test sample from Tyrol](sample_prediction_tyrol-e7.png "Test Sample Bellingham20")
-![another test sample from Sfo](sample_prediction_sfo15.png "Test Sample Vienna23")
+![test sample Belligham](plot/sample_prediction_bellingham19.png "Test Sample Bellingham19")
+![another test sample from Tyrol](plot/sample_prediction_tyrol-e7.png "Test Sample Bellingham20")
+![another test sample from Sfo](plot/sample_prediction_sfo15.png "Test Sample Vienna23")
 
 As we can see, the model is able to generalize to new images and still detects buildings, although the performance may vary depending on the specific characteristics of the test images (e.g., lighting conditions, building density, etc.).
 However, it is important to note that without the ground truth masks for the test set, we cannot quantitatively evaluate the model's performance on this data.
@@ -137,6 +154,5 @@ Here are some ideas for future improvements and experiments:
 - [ ] **Advanced Augmentation**: Add more robust data augmentation (rotations, flips, color jitter) to improve generalization.
 - [ ] **Loss Functions**: Test different loss functions such as Dice Loss or Focal Loss to handle class imbalance better.
 - [ ] **Scheduler**: Implement a learning rate scheduler (e.g., CosineAnnealing) for better convergence.
-
 
 Happy coding! 

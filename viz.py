@@ -51,7 +51,7 @@ def compare_predictions(filename, prediction_folder, suffix_models):
         ax.axis('off')
 
     plt.tight_layout()
-    plt.savefig("comparison_predictions.png")
+    plt.savefig("plots/comparison_predictions.png")
     plt.show()
 
 
@@ -85,7 +85,7 @@ def plot_val_pred(gt_folder, pred_folder, nb_sample=5, best_model="33"):
             break
 
     plt.tight_layout()
-    plt.savefig("val_predictions_comparison.png")
+    plt.savefig("plots/val_predictions_comparison.png")
     plt.show()
 
 
@@ -126,9 +126,8 @@ def plot_pred_sample(images_folder, pred_folder, best_model="33"):
     axes[2].axis('off')
 
     plt.tight_layout()
-    plt.savefig(f"sample_prediction_{filename}.png")
+    plt.savefig(f"plots/sample_prediction_{filename}.png")
     plt.show()
-
 
 
 if __name__ == "__main__":
